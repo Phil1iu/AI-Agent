@@ -1,0 +1,147 @@
+[
+  {
+    "id": "02aede02-c7c9-4b89-8c9f-cd34d2f91287",
+    "name": "servo",
+    "type": "streamable-http",
+    "args": [],
+    "url": "http://localhost:4880",
+    "env": {},
+    "enabled": true,
+    "tools": [
+      {
+        "name": "readAllServoParameters",
+        "description": "读取伺服驱动中全部参数的当前值",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "description": "设备ID",
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "deviceId"
+          ]
+        }
+      },
+      {
+        "name": "inertiaIdentification",
+        "description": "惯量辨识工具。用于识别和设置伺服系统负载转动惯量比, 返回辨识出的负载转动惯量比",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "description": "设备ID",
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "deviceId"
+          ]
+        }
+      },
+      {
+        "name": "getConnectedDevices",
+        "description": "获取已连接的伺服设备",
+        "inputSchema": {
+          "type": "object",
+          "properties": {}
+        }
+      },
+      {
+        "name": "setStiffnessLevel",
+        "description": "设定自调整机械刚性等级",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "description": "设备ID",
+              "type": "string",
+              "format": "uuid"
+            },
+            "stiffnessLevel": {
+              "description": "刚性等级设定值。最小值0,最大值31",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "deviceId",
+            "stiffnessLevel"
+          ]
+        }
+      },
+      {
+        "name": "runJogAndSampling",
+        "description": "执行伺服的Jog运行操作并且启动采样和分析采样数据",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "description": "设备ID",
+              "type": "string",
+              "format": "uuid"
+            },
+            "settlingRange": {
+              "description": "整定定位精度",
+              "type": "integer"
+            }
+          },
+          "required": [
+            "deviceId",
+            "settlingRange"
+          ]
+        }
+      },
+      {
+        "name": "writeServoParameters",
+        "description": "向指定的伺服设备中写入参数",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "description": "设备ID",
+              "type": "string",
+              "format": "uuid"
+            },
+            "datas": {
+              "description": "需要写入的参数以及写入值",
+              "type": "array",
+              "items": {
+                "type": "object",
+                "properties": {
+                  "id": {
+                    "type": "string"
+                  },
+                  "offset": {
+                    "type": "integer"
+                  },
+                  "subOffset": {
+                    "type": [
+                      "integer",
+                      "null"
+                    ]
+                  },
+                  "isSigned": {
+                    "type": "boolean"
+                  },
+                  "byteSize": {
+                    "type": "integer"
+                  },
+                  "data": {
+                    "type": "integer"
+                  }
+                }
+              }
+            }
+          },
+          "required": [
+            "deviceId",
+            "datas"
+          ]
+        }
+      }
+    ]
+  }
+]
