@@ -1,6 +1,32 @@
 import OpenAI from 'openai'
 import Anthropic from '@anthropic-ai/sdk'
 import { llmStorage, settingsStorage, LLMConfig } from '../storage/index.js'
+import { fetch as undiciFetch, ProxyAgent, RequestInit } from 'undici'
+
+// 获取代理 URL
+function getProxyUrl(): string | undefined {
+  const proxy = process.env.HTTPS_PROXY || process.env.HTTP_PROXY || process.env.https_proxy || process.env.http_proxy
+  if (!proxy) return undefined
+  if (!proxy.startsWith('http://') && !proxy.startsWith('https://')) {
+    return `http://${proxy}`
+  }
+  return proxy
+}
+
+const proxyUrl = getProxyUrl()
+const proxyAgent = proxyUrl ? new ProxyAgent(proxyUrl) : undefined
+
+// 打印代理状态
+if (proxyUrl) {
+  console.log(`[LLMService] Using proxy: ${proxyUrl}`)
+} else {
+  console.log('[LLMService] No proxy configured')
+}
+
+// 创建支持代理的 fetch 函数
+const customFetch = proxyAgent
+  ? ((url: unknown, init?: unknown) => undiciFetch(url as string, { ...(init as RequestInit), dispatcher: proxyAgent })) as unknown as typeof fetch
+  : undefined
 
 interface Tool {
   name: string
@@ -57,7 +83,8 @@ class LLMService {
     if (!this.openaiClients.has(cacheKey)) {
       this.openaiClients.set(cacheKey, new OpenAI({
         apiKey: config.apiKey,
-        baseURL: config.baseUrl || undefined
+        baseURL: config.baseUrl || undefined,
+        fetch: customFetch
       }))
     }
     return this.openaiClients.get(cacheKey)!
@@ -65,7 +92,10 @@ class LLMService {
 
   private getAnthropicClient(config: LLMConfig): Anthropic {
     if (!this.anthropicClients.has(config.id)) {
-      this.anthropicClients.set(config.id, new Anthropic({ apiKey: config.apiKey }))
+      this.anthropicClients.set(config.id, new Anthropic({
+        apiKey: config.apiKey,
+        fetch: customFetch
+      }))
     }
     return this.anthropicClients.get(config.id)!
   }
