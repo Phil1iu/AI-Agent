@@ -456,6 +456,69 @@ function MarkdownContent({ content }: { content: string }) {
 - 代码块语法高亮（使用 oneDark 主题）
 - 内联代码、列表、链接、表格等
 
+## 代理配置
+
+如果您的网络环境需要通过代理访问外部 API（如 OpenAI、Anthropic 或其他 LLM 服务），需要配置 HTTP 代理环境变量。
+
+### 设置代理
+
+**方法1：临时设置（当前终端会话有效）**
+
+CMD:
+```cmd
+set HTTPS_PROXY=http://127.0.0.1:10809
+set HTTP_PROXY=http://127.0.0.1:10809
+```
+
+PowerShell:
+```powershell
+$env:HTTPS_PROXY = "http://127.0.0.1:10809"
+$env:HTTP_PROXY = "http://127.0.0.1:10809"
+```
+
+**方法2：永久设置（全局生效）**
+
+CMD（管理员）:
+```cmd
+setx HTTPS_PROXY "http://127.0.0.1:10809"
+setx HTTP_PROXY "http://127.0.0.1:10809"
+```
+
+PowerShell（管理员）:
+```powershell
+[Environment]::SetEnvironmentVariable("HTTPS_PROXY", "http://127.0.0.1:10809", "User")
+[Environment]::SetEnvironmentVariable("HTTP_PROXY", "http://127.0.0.1:10809", "User")
+```
+
+或通过图形界面：`Win + R` → `sysdm.cpl` → 高级 → 环境变量 → 新建用户变量
+
+### 清除代理
+
+**临时清除（当前会话）**
+
+关闭终端重新打开即可。
+
+**永久清除**
+
+CMD（管理员）:
+```cmd
+setx HTTPS_PROXY ""
+setx HTTP_PROXY ""
+```
+
+PowerShell（管理员）:
+```powershell
+[Environment]::SetEnvironmentVariable("HTTPS_PROXY", $null, "User")
+[Environment]::SetEnvironmentVariable("HTTP_PROXY", $null, "User")
+```
+
+或通过图形界面删除对应的环境变量。
+
+> **注意：**
+> - 设置或清除后需要**重新打开终端**或**重启 VSCode** 才能生效
+> - V2rayN 用户请使用 HTTP 代理端口（通常是 `10809`），而不是 SOCKS5 端口（`10808`）
+> - Clash 用户通常使用端口 `7890`
+
 ## 运行项目
 
 ```bash
