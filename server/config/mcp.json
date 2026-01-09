@@ -9,6 +9,23 @@
     "enabled": true,
     "tools": [
       {
+        "name": "resetServo",
+        "description": "复位伺服驱动工具。用于复位伺服驱动, 在伺服报警后可运行该工具来复位伺服状态",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "description": "设备ID",
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "deviceId"
+          ]
+        }
+      },
+      {
         "name": "readAllServoParameters",
         "description": "读取伺服驱动中全部参数的当前值",
         "inputSchema": {
@@ -28,6 +45,23 @@
       {
         "name": "inertiaIdentification",
         "description": "惯量辨识工具。用于识别和设置伺服系统负载转动惯量比, 返回辨识出的负载转动惯量比",
+        "inputSchema": {
+          "type": "object",
+          "properties": {
+            "deviceId": {
+              "description": "设备ID",
+              "type": "string",
+              "format": "uuid"
+            }
+          },
+          "required": [
+            "deviceId"
+          ]
+        }
+      },
+      {
+        "name": "getServoStatus",
+        "description": "获取已连接的伺服设备状态，包括运行状态(未准备好/准备好/运行中/故障)、急停状态、故障码等",
         "inputSchema": {
           "type": "object",
           "properties": {
